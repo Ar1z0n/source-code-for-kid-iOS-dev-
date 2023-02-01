@@ -1,0 +1,1701 @@
+<html>
+
+<head>
+    <title>Unity5D Tool</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <style>
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+        }
+
+        * {
+            color: #E8E8E8;
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+
+            /* DebugMode:delete next line to show dashed border */
+            /*
+    border: 1px dashed gray;/**/
+
+        }
+
+        *:not(input, checkbox, textarea) {
+            /*禁止文本选择*/
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            /* Non-prefixed version, currently */
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        input {
+            background-color: rgba(0, 0, 0, 0);
+            height: 25px;
+        }
+
+        button {
+            height: 30px;
+            background-color: #E8E8E850;
+            display: inline-block;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:enabled:active {
+            transform: translateY(2px);
+        }
+
+        input[type=radio] {
+            width: 20px;
+            height: 20px;
+            margin-right: 6px;
+            border: none;
+            outline-style: none;
+            -webkit-appearance: none;
+            appearance: none;
+            vertical-align: middle;
+            border: 1px solid #DDDDDDF0;
+            border-radius: 50%;
+        }
+
+        input[type=radio]:checked {
+            border: 6px solid #2F7DCDF0;
+            background: #FFFFFF;
+        }
+
+        input[type=checkbox] {
+            visibility: hidden;
+            vertical-align: middle;
+            margin-bottom: 2px;
+            cursor: pointer;
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        input[type=checkbox]::after {
+            position: absolute;
+            top: 0;
+            margin-top: 2px;
+            width: 14px;
+            height: 14px;
+            border: 1px solid #EEEEEE;
+            border-radius: 3px;
+            background-color: rgba(0, 0, 0, 0);
+            display: inline-block;
+            visibility: visible;
+            text-align: center;
+            content: ' ';
+        }
+
+        input[type=checkbox]:checked::after {
+            content: "✓";
+            border-color: #4498F7;
+            background-color: #4498F7;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 15px;
+            cursor: pointer;
+            animation: 0.2s;
+            background: #D1D1D130;
+            border-radius: 1.3px;
+            border: 0.2px solid #010101;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            border: 1px solid #000000;
+            height: 18px;
+            width: 16px;
+            border-radius: 3px;
+            background: #FFFFFFE0;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: -2px;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: #367ebd;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: #E8E8E830;
+            height: 25px;
+        }
+
+        /* 滚动条整体部分 */
+        .scrollbar {
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 5px;
+            /* 纵向滚动条宽度 */
+            height: 5px;
+            /* 横向滚动条高度 */
+            background-color: #F5F5F5;
+            /* 滚动条整体背景，一般被覆盖着 */
+        }
+
+        /* 滚动条的轨道（里面装有Thumb） */
+        .scrollbar::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            /* 滚动条轨道阴影 */
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            /*border-radius: 10px; /* 滚动条轨道圆角 */
+            background-color: #F5F5F5;
+            /* 滚动条轨道背景 */
+        }
+
+        /* 滚动条里面的滑块 */
+        .scrollbar::-webkit-scrollbar-thumb {
+            border-radius: 15px;
+            /* 滚动条滑块圆角 */
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            /* 滚动条滑块阴影 */
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: #B8B8B8;
+            /* 滚动条滑块颜色 */
+        }
+
+        .menubox {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            /*height和line-height设置一样即可文字垂直居中*/
+            text-align: center;
+        }
+
+        .menubox.current {
+            background-color: #494949;
+        }
+
+        .menuview {
+            display: none;
+            overflow-x: hidden;
+            /*overflow-y: scroll;*/
+            height: 100%;
+        }
+
+        .menuview.current {
+            display: block;
+        }
+
+        .objectlist {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .objectlist td {
+            height: 25px;
+            border-bottom: 1px solid gray;
+        }
+
+
+        #console {
+            margin: 0;
+            zoom: 1.2;
+            background-color: #202C3E;
+            position: absolute;
+            z-index: 1000;
+            left: 30px;
+            top: 2px;
+            width: calc(700px /1.2);
+            height: calc(370px / 1.2);
+        }
+    </style>
+
+
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+
+        if (typeof $ == 'undefined') alert("网络连接失败, 请重新启动!");
+
+        function resetDebugInfo() {
+            $("table#GameObject tr").remove();
+            $("table#Component tr").remove();
+            $("#GameObjectTotalCount").html("0");
+            $("#GameObjectCount").html("valid:0");
+            $("#ComponentCount").html("types:0");
+
+        }
+
+        $(document).ready(function () {
+            //alert();
+            //绑定菜单点击切换子页面
+            $("div.menubox").click(function () {
+                $("div.menubox").removeClass("current");
+                $("div.menuview").removeClass("current");
+                $(this).addClass("current");
+
+                let menuid = $(this).attr("menu");
+                $("div#" + menuid).addClass("current");
+            });
+
+            /*禁止文本Option和拖动*/
+            document.body.onselectstart = document.body.ondrag = function () {
+                return false;
+            }
+
+            $("input").blur(function () {
+                window.scroll(0, 0); //文本框等输入完毕后页面自动滚动到顶部
+            });
+
+            //激活webkit的button:active
+            document.body.addEventListener('touchstart', function () { });
+
+            if (typeof h5gg != 'undefined') {
+
+                setWindowRect(0, 0, window.screen.height, window.screen.width);
+
+                setButtonAction(function () {
+
+                    let menu = document.querySelector("#console");
+                    if (menu.style.display == 'none') {
+                        menu.style.display = 'block';
+                        //隐藏菜单之后, 设置触控穿透悬浮窗口
+                        setWindowTouch(true);
+                    } else {
+                        menu.style.display = 'none';
+                        //显示菜单之后, 设置触控不可穿透悬浮窗口
+                        setWindowTouch(false);
+                    }
+
+                });
+
+                resetDebugInfo();
+                $("#MainComponentFilter").text("");
+                $("td[filter=SubComponentFilter]").closest("tr").remove();
+            }
+
+            // for(let i=0; i<8000; i++) //显示过多列表疯狂上拉刷新会爆内存崩溃
+            //         $("table#GameObject tbody").append("<tr><td>[0x13d84afc0] Character 214200107</td><td style=\"width:20px\" onclick=\"alert('count of Components in this GameObject')\">(5)</td></tr>");
+
+
+            //获取画布
+            let canvas = document.querySelector("#cav");
+            //设置按照屏幕像素尺寸绘图(高清模式)
+            let scale = window.devicePixelRatio;
+
+            canvas.width = window.screen.height * scale;
+            canvas.height = window.screen.width * scale;
+
+            //获取绘图
+            let ctx = canvas.getContext("2d", { alpha: false, desynchronized: false });
+
+            //添加圆角矩形功能
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.beginPath();
+                this.moveTo(x + r, y);
+                this.arcTo(x + w, y, x + w, y + h, r);
+                this.arcTo(x + w, y + h, x, y + h, r);
+                this.arcTo(x, y + h, x, y, r);
+                this.arcTo(x, y, x + w, y, r);
+                this.closePath();
+                return this;
+            }
+
+            window.gRoles = [];
+
+
+            function startdraw() {
+                //清理画布开始新一轮绘图
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (window.draw_state == 0) return;
+
+                //画个圆圈
+                ctx.beginPath();
+                ctx.lineWidth = 2; //线宽
+                ctx.strokeStyle = '#ff000080'; //颜色
+                ctx.arc((canvas.width) / 2, (canvas.height) / 2, 300, 0, Math.PI * 2, false);
+                ctx.stroke();
+
+                ctx.textBaseline = "top";
+                ctx.textAlign = "center";
+                ctx.font = '40px Tahoma';
+                ctx.fillStyle = "#2DEC00";
+                for (let i = 0; i < gRoles.length; i++) {
+                    let x = gRoles[i].x * window.devicePixelRatio;
+                    let y = gRoles[i].y * window.devicePixelRatio;
+
+                    ctx.fillText(gRoles[i].id, x, y);
+
+                    if (window.drawRayline) {
+                        ctx.beginPath();
+                        ctx.lineWidth = 2; //线宽
+                        ctx.strokeStyle = "#2DEC00"; //颜色
+                        ctx.moveTo((canvas.width) / 2, 30 + 60); //起始点
+                        ctx.lineTo(x, y - 10); //结束点
+                        ctx.stroke(); //射线
+                    }
+                }
+
+                ctx.lineWidth = 0;
+                ctx.fillStyle = "#FFFF00A0";
+                ctx.strokeStyle = "#FFFF0080";
+                ctx.roundRect((canvas.width - 200) / 2, 30, 200, 60, 15).fill();
+
+                ctx.textBaseline = "top";
+                ctx.textAlign = "center";
+                ctx.fillStyle = "black";
+                ctx.font = '60px "Arial, sans-serif"';
+                ctx.fillText(gRoles.length, canvas.width / 2, 25);
+
+                //计算FPS
+                if (!window.fpscount) window.fpscount = 0;
+                if (!window.fpstime) window.fpstime = performance.now();
+                window.fpscount++;
+                if ((performance.now() - window.fpstime) > 2022) //year
+                {
+                    window.fps = window.fpscount;
+                    window.fpstime = performance.now();
+                    window.fpscount = 0;
+                }
+
+                ctx.fillStyle = "red";
+                if (window.fps) ctx.fillText("FPS:" + window.fps, 120, 30);
+            }
+
+            //默认关闭绘图
+            window.draw_state = 1;
+
+            //* 定时器绘图, 在JS线程, 不影响APP帧率, 不要使用requestAnimationFrame会导致APP卡顿
+            setInterval(function () {
+                startdraw();
+            }, 33);//*/
+
+            document.addEventListener("touchmove", function (e) {
+                const excludeEl = document.querySelectorAll(".scrollbar");
+                const isExclude = Array.prototype.some.call(excludeEl, function (el) {
+                    return el.contains(e.target) && el.clientHeight < el.scrollHeight;
+                });
+                //console.log(isExclude, e.target);
+                if (isExclude) {
+                    return true;
+                }
+                e.preventDefault();
+            }, { passive: false });
+        });
+
+    </script>
+
+</head>
+
+<body>
+
+    <!--全屏画板-->
+    <canvas id="cav" width="100%" height="100%" style="width:100%;height:100%;"></canvas>
+
+    <!--悬浮菜单-->
+    <div id="console">
+        <!--用一个表格来布局左右两栏-->
+        <table id="bodyView" width="100%" style="table-layout:fixed;height:100%;">
+
+            <tr>
+
+                <td width="75" style="vertical-align:top; border-right: 1px solid gray;">
+
+                    <div>
+                        <div id="titleBar"
+                            style="border-bottom: 1px solid gray;text-align:center;background-color:#122220; padding:5px; margin:0px;"
+                            onclick="if(/http/.test(location))location.reload(true)">
+                            Unity5D<br />1.0
+                        </div>
+                        <div class="menubox current" menu="menu1">Initialize</div>
+                        <div class="menubox" menu="menu2" style="line-height:18px;height:40px">GameObject
+                            <br /><span style="color:gray" id="GameObjectCount">valid:1234</span>
+                        </div>
+                        <div class="menubox" menu="menu3" style="line-height:18px;height:40px">Component
+                            <br /><span style="color:gray" id="ComponentCount">types:123</span>
+                        </div>
+                        <div class="menubox" menu="menu4">Filter&Draw</div>
+                        <div style="border-top: 1px solid gray;padding:5px; margin:0px;">
+                            <button onclick="refreshUnityData()">refresh</button>
+                        </div>
+                    </div>
+                </td>
+                <td style="vertical-align:top">
+                    <div id="menu1" class="menuview current">
+                        <p>Universal Unity Debug Tool</p>
+                        <p><button onclick="init_via_il2cpp_api()">init via il2cpp apis</button></p>
+                        <p><button onclick="alert('unsupported yet!')">init via sdk offsets</button></p>
+                        <p><button onclick="alert('unsupported yet!')">init via IDA offsets</button></p>
+                        <p><button onclick="alert('unsupported yet!')">init via search pattern</button></p>
+                        <p>GameObjectCount: <span id="GameObjectTotalCount">0</span></p>
+                    </div>
+
+                    <style>
+                        #GameObject td:nth-of-type(2) {
+                            width:20px;
+                            float: right;
+                        }
+
+                        #Component td:nth-of-type(2) {
+                            width:20px;
+                            float: right;
+                        }
+
+                        #Component span {
+                            width:20px;
+                            float: right;
+                        }
+                    </style>
+                    <div id="menu2" class="menuview">
+                        <input style="width:100%;margin-bottom:5px" placeholder="Filter by ID/Name/Components"
+                            onchange="refreshGameObject()" id="filterGameObject"
+                            onfocus="if(this.value.indexOf('hasComponent:')==0)$(this).val('').change();" />
+                        <div style="overflow-y: scroll;height:calc(100% - 30px);" class="scrollbar">
+                            <table id="GameObject" class="objectlist">
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td style="width:20px" onclick="alert('count of Components in this GameObject')">(5)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                                <tr>
+                                    <td>[-1234] Character 214200107</td>
+                                    <td>(5)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="menu3" class="menuview">
+                        <input style="width:100%;margin-bottom:5px" placeholder="Filter by Type Name of Component"
+                            onchange="refreshComponent()" id="filterComponent" />
+                        <div style="overflow-y: scroll;height:calc(100% - 30px);" class="scrollbar">
+                            <table id="Component" class="objectlist">
+                                <tr>
+                                    <td>UnityEngine.Transform</td>
+                                    <td style="width:40px"
+                                        onclick="alert('count of GameObjects that have this Component')">(1000)</td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.RectTransform <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.Animator <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.CanvasRenderer <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.UI.Image <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.UI.Button <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.CanvasGroup <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.Rigidbody <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>UnityEngine.CapsuleCollider <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>CriticalOps.Gameplay.BoundingSphere <span style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>CriticalOps.Gameplay.CharacterViewFirstPerson <span
+                                            style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>CriticalOps.Gameplay.CharacterViewThirdPerson <span
+                                            style="float:right">(1000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td>CriticalOps.Gameplay.LocalCharacter <span style="float:right">(1000)</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="menu4" class="menuview scrollbar">
+
+                        <table id=" DrawFilter" style="width:100%; border: 1px">
+                            <tr style="background-color:black; height:25px">
+                                <td width=100>&nbsp;&nbsp;Filter</td>
+                                <td>&nbsp;&nbsp;Value</td>
+                            </tr>
+
+                            <tr style="height:30px">
+                                <td>MainCamera</td>
+                                <td>
+                                    <select id="MainCameraFilter" style="padding: 0 2%;">
+                                        <option style="text-align:center;" value="">&nbsp Default Main Camera &nbsp
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr style="height:30px">
+                                <td>MainComponent&nbsp;&nbsp;<span style="color:green"
+                                        onclick="alert('The Less Count of Main Component, the Faster the Drawing')">[?]</span>
+                                </td>
+                                <td id="MainComponentFilter">UnityEngine.CapsuleCollider</td>
+                            </tr>
+
+                            <tr style="height:30px">
+                                <td>GameObjectName</td>
+                                <td><select id="GameObjectNameFilterType">
+                                        <option value=1>&nbsp;Equal</option>
+                                        <option value=2>Contain</option>
+                                    </select>
+                                    <input id="GameObjectNameFilter"
+                                        placeholder="tap to set Name Filter (Case Sensitive)" style="width:220px" />
+                                </td>
+                            </tr>
+
+                            <tr style="height:30px">
+                                <td>+ SubComponent</td>
+                                <td filter="SubComponentFilter">UnityEngine.Rigidbody
+                                    <span style="color:red" onclick="alert()">&nbsp[X]</span>
+                                </td>
+                            </tr>
+
+                            <tr style="height:30px">
+                                <td>+ SubComponent</td>
+                                <td filter="SubComponentFilter">CriticalOps.Gameplay.LocalCharacter
+                                    <span style="color:red" onclick="alert()">&nbsp[X]</span>
+                                </td>
+                            </tr>
+
+                        </table>
+                        <br />
+                        <label><input type="checkbox" id="drawRayline" />drawRayline</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label><input type="checkbox"
+                                id="w2sInMainThread" />w2sInMainThread</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label><input type="checkbox" id="calcInMainThread" />calcInMainThread</label>
+
+                        <br /><br />
+                        <center><button id="draw_button" onclick="on_draw_button_click()">startDraw</button></center>
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+
+        <style>
+            .maskview {
+                display: none;
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                filter: alpha(opacity=60);
+                background-color: #777;
+                z-index: 1001;
+                opacity: 0.5;
+            }
+
+            .popup_container {
+                position: absolute;
+                z-index: 1002;
+                left: 50%;
+                top: 0;
+            }
+
+            #popup_component {
+                z-index: 1003;
+                display: none;
+                text-align: center;
+                background-color: #122220;
+                width: 380px;
+                height: 80px;
+                position: absolute;
+                left: -200px;
+                top: 100px;
+                border: 1px solid #B8B8B880;
+                border-radius: 5px;
+                padding: 10px;
+                text-align: left;
+            }
+
+            #popup_gameobject {
+                display: none;
+                text-align: center;
+                background-color: #122220;
+                width: 450px;
+                height: 220px;
+                position: absolute;
+                left: -220px;
+                top: 20px;
+                border: 1px solid #B8B8B880;
+                border-radius: 5px;
+                padding: 10px;
+                text-align: left;
+            }
+        </style>
+        <div id="maskview" class="maskview"></div>
+        <div class="popup_container">
+
+            <div id="popup_gameobject">
+                <div style="overflow-y: scroll;height:calc(100% - 30px);" class="scrollbar">
+                    <table border=1 style="width:100%" class="srollbar" id="GameObjectInfo">
+                        <tr>
+                            <td width=100>GameObjectID</td>
+                            <td id="GameObjectID">-1234</td>
+                        </tr>
+                        <tr>
+                            <td width=100>GameObjectName</td>
+                            <td id="GameObjectName">Character 214200107</td>
+                        </tr>
+                        <tr>
+                            <td width=100>ComponentCount</td>
+                            <td id="ComponentCount">5</td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 style="text-align:center">Components</td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.Transform<span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.RectTransform <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.Animator <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.CanvasRenderer <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.UI.Image <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.UI.Button <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.CanvasGroup <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.Rigidbody <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">UnityEngine.CapsuleCollider <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">CriticalOps.Gameplay.BoundingSphere <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">CriticalOps.Gameplay.CharacterViewFirstPerson <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">CriticalOps.Gameplay.CharacterViewThirdPerson <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2 type="GameObjectComponent">CriticalOps.Gameplay.LocalCharacter <span
+                                    style="float:right">(1000)</span></td>
+                        </tr>
+                    </table>
+                </div>
+                <br />
+                <div style="text-align:center; color:green; font-size:16px; font-family: Arial, sans-serif;"
+                    onclick="showGameObjectInfo(-1)">[X]</div>
+            </div>
+
+            <div id="popup_component">
+                <span id="componentType">CriticalOps.Gameplay.CharacterViewThirdPerson</span>
+                <div style="float:right; font-size:16px; font-family: Arial, sans-serif;"
+                    onclick="showComponentOprator(null,null)">X&nbsp;</div>
+                <br /><br /><br />
+                &nbsp;&nbsp;&nbsp;
+                <button onclick="setMainComponentFilter()">set MainComponent Filter</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button onclick="addSubComponentFilter()">add SubComponent Filter</button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        function showComponentOprator(type, image) {
+            if (type && image) {
+                $("#maskview").show();
+                $("#popup_component").show();
+
+                $("#popup_component").attr('type', type);
+                $("#popup_component").attr('imagefile', image);
+
+                $("#componentType").text(type);
+
+            } else {
+                $("#maskview").hide();
+                $("#popup_component").hide();
+            }
+        }
+
+        function showGameObjectByComponent(type) {
+            $("#popup_gameobject").hide();
+            $("#maskview").hide();
+
+            $("#filterGameObject").val("hasComponent:" + type);
+
+            $("div.menubox").removeClass("current");
+            $("div.menuview").removeClass("current");
+
+            $("div[menu=menu2]").addClass("current");
+            $("div#menu2").addClass("current");
+
+            refreshGameObject();
+        }
+
+        function checkSubComponentFilterExist(type, imagefile) {
+            let found = false;
+            $("td[filter=SubComponentFilter]").each(function () {
+                if ($(this).attr("type") == type && $(this).attr("imagefile") == imagefile)
+                    found = true;
+            });
+            return found;
+        }
+
+        function setMainComponentFilter() {
+            if (window.drawing) {
+                alert("please stopDraw first!");
+                return;
+            }
+
+            let type = $("#popup_component").attr('type');
+            let imagefile = $("#popup_component").attr('imagefile');
+            if (checkSubComponentFilterExist(type, imagefile)) {
+                alert("this Type of Component is already in SubComponentFilters");
+                return;
+            }
+
+            $("#MainComponentFilter").attr("type", type);
+            $("#MainComponentFilter").attr("imagefile", imagefile);
+
+            $("#MainComponentFilter").text(type);
+
+            $("#maskview").hide();
+            $("#popup_component").hide();
+        }
+
+        function addSubComponentFilter() {
+            if (window.drawing) {
+                alert("please stopDraw first!");
+                return;
+            }
+
+            let type = $("#popup_component").attr('type');
+            let imagefile = $("#popup_component").attr('imagefile');
+
+            if (type == $("#MainComponentFilter").attr("type") && imagefile == $("#MainComponentFilter").attr("imagefile")) {
+                alert("this Type of Component is already the MainComponentFilter!");
+                return;
+            }
+
+            $("#maskview").hide();
+            $("#popup_component").hide();
+
+            if (checkSubComponentFilterExist(type, imagefile)) {
+                return;
+            }
+            let row = "<tr style='height:30px'><td>+ SubComponent</td><td filter='SubComponentFilter' type='" + type + "' imagefile='" + imagefile + "'>" + type
+                + "<span style='color:red' onclick='if(!window.drawing)$(this).closest(\"tr\").remove()''>&nbsp[X]</span></td></tr>";
+            $("#DrawFilter tbody").append(row);
+
+        }
+
+
+        function disableFilterControls(disabled) {
+            $("#MainCameraFilter").attr("disabled", disabled);
+            $("#GameObjectNameFilter").attr("disabled", disabled);
+            $("#GameObjectNameFilterType").attr("disabled", disabled);
+
+            $("#drawRayline").attr("disabled", disabled);
+            $("#w2sInMainThread").attr("disabled", disabled);
+            $("#calcInMainThread").attr("disabled", disabled);
+        }
+
+        function on_draw_button_click() {
+            if (!window.init_ok) {
+                alert("please init first!");
+                return;
+            }
+            if ($("#draw_button").text() != "startDraw") {
+                $("#draw_button").text("startDraw");
+                disableFilterControls(false);
+                script.call("stopDraw");
+                window.drawing = false;
+                return;
+            }
+
+            let MainComponentFilter = {
+                type: $("#MainComponentFilter").attr("type"),
+                image: $("#MainComponentFilter").attr("imagefile")
+            };
+            if (!MainComponentFilter.type) {
+                alert("please set MainComponentFilter first!");
+                return;
+            }
+
+            let GameObjectNameFilter = {
+                type: $("#GameObjectNameFilterType").val(),
+                value: $("#GameObjectNameFilter").val()
+            };
+
+            let SubComponentFilters = [];
+
+            $("td[filter=SubComponentFilter]").each(function () {
+                SubComponentFilters.push($(this).attr("type"));
+            });
+
+            let drawArgs = {
+                MainCameraFilter: $("#MainCameraFilter").val(),
+                MainComponentFilter: MainComponentFilter,
+                GameObjectNameFilter: GameObjectNameFilter,
+                SubComponentFilters: SubComponentFilters,
+                w2sInMainThread: $("#w2sInMainThread").prop('checked'),
+                calcInMainThread: $("#calcInMainThread").prop('checked'),
+            };
+
+            window.drawRayline = $("#drawRayline").prop('checked');
+
+            if (script.call("startDraw", [drawArgs])) {
+                $("#draw_button").text("stopDraw");
+                disableFilterControls(true);
+                window.drawing = true;
+            }
+        }
+
+        let gUnityData = {};
+
+        function showGameObjectInfo(i) {
+            if (i != -1) {
+                $("#popup_gameobject").show();
+                $("#maskview").show();
+
+                $("td[type=GameObjectComponent]").parent("tr").remove();
+
+                let item = gUnityData.gameObjects[i];
+                let instanceID = item[0]; let name = item[1]; let components = item[2];
+
+                $("td#GameObjectID").text(instanceID);
+                $("td#GameObjectName").text(name);
+                $("td#ComponentCount").text(components.length);
+
+                components = components.map(function (index) {
+                    let item = gUnityData.components[index];
+                    let row = "<tr style=\"height:30px\"><td colspan=2 type=\"GameObjectComponent\" onclick=\"showGameObjectByComponent('" + item.type + "')\"><a href='#'>" + item.type + "</a>&nbsp<span style='color:green' onclick='showComponentOprator(\"" + item.type + '","' + item.image + "\");event.stopImmediatePropagation()'>&nbsp[+]</span>"
+                        + "<span style=\"float:right\">(" + item.count + ")&nbsp&nbsp</span></td></tr>";
+                    $("#GameObjectInfo tbody").append(row);
+                });
+            } else {
+                $("#popup_gameobject").hide();
+                $("#maskview").hide();
+            }
+        }
+
+        function refreshGameObject() {
+            $("table#GameObject tr").remove();
+
+            let filter = $("#filterGameObject").val();
+            let hasComponent = filter.indexOf("hasComponent:") == 0;
+            let ComponentIndex = -1;
+            if (hasComponent) {
+                let ComponentType = filter.substring("hasComponent:".length);
+                for (let i = 0; i < gUnityData.components.length; i++) {
+                    if (ComponentType == gUnityData.components[i].type) {
+                        ComponentIndex = i;
+                        break;
+                    }
+                }
+                if (ComponentIndex == -1) {
+                    alert("Invalid Component Type Filter!");
+                }
+            }
+
+            filter = filter.toLowerCase();
+
+            let hasFilter = /[^\s]+/.test(filter);
+            let count = 0;
+            for (let i = 0; i < gUnityData.gameObjects.length; i++) {
+                let item = gUnityData.gameObjects[i];
+                let instanceID = item[0]; let name = item[1]; let components = item[2];
+                if (!hasFilter || instanceID == filter || name.toLowerCase().indexOf(filter) != -1 || components.indexOf(ComponentIndex) != -1) {
+                    let row = "<tr><td onclick=\"showGameObjectInfo(" + i + ")\">[" + instanceID + "] " + name + "</td>"
+                        + "<td style=\"width:25px\" onclick=\"alert('count of Components in this GameObject')\">(" + components.length + ")</td></tr>";
+
+                    $("table#GameObject tbody").append(row);
+
+                    if (count++ > 1000) break;
+                }
+            }
+        }
+
+        function refreshComponent() {
+            $("table#Component tr").remove();
+
+            let filter = $("#filterComponent").val().toLowerCase();
+            let hasFilter = /[^\s]+/.test(filter);
+
+            let components = gUnityData.components.concat();
+            components.sort(function (a, b) {
+                return a.type.localeCompare(b.type);
+            });
+
+            for (let i = 0; i < components.length; i++) {
+                let item = components[i];
+                if (!hasFilter || item.type.toLowerCase().indexOf(filter) != -1) {
+                    let row = "<tr><td onclick=\"showGameObjectByComponent('" + item.type + "')\">" + item.type + "&nbsp<span style='color:green' onclick='showComponentOprator(\"" + item.type + '","' + item.image + "\");event.stopImmediatePropagation()'>&nbsp[+]</span></td>"
+                        + "<td style=\"width:40px\" onclick=\"alert('count of Components of this Type')\">(" + item.count + ")</td></tr>";
+
+                    $("table#Component tbody").append(row);
+                }
+            }
+        }
+
+        function refreshList() {
+            if (!gUnityData) return;
+
+            $("#GameObjectCount").html("valid:" + gUnityData.gameObjects.length);
+            $("#ComponentCount").html("types:" + gUnityData.components.length);
+            $("#GameObjectTotalCount").html(gUnityData.gameObjectCount);
+
+            refreshGameObject();
+
+            refreshComponent();
+
+            let MainCameraFilter = $("#MainCameraFilter").val();
+            $("#MainCameraFilter option[value!='']").remove();
+
+            for (let i = 0; i < gUnityData.cameras.length; i++) {
+                let camera = gUnityData.cameras[i];
+                $("#MainCameraFilter").append("<option value='" + camera.addr + "'>" + camera.desc + "</option>");
+            }
+
+            $("#MainCameraFilter").val(MainCameraFilter);
+        }
+
+
+        function refreshUnityData() {
+            if (!window.init_ok) {
+                alert("please init first!");
+                return;
+            }
+
+            resetDebugInfo();
+
+            setTimeout(function () {
+                gUnityData = script.call("getdata");
+                refreshList();
+            }, 100);
+        }
+
+        function recv_frida_data(payload) {
+            //console.log(JSON.stringify(payload));
+            if (payload.type == "draw")
+                gRoles = payload.data;
+            else if (payload.type == "error")
+                alert("frida error:\n" + JSON.stringify(payload.data, null, 1).replaceAll("\\n", "\n"));
+        }
+
+        function init_via_il2cpp_api() {
+            if (script.call("init_via_il2cpp_api")) {
+                window.init_ok = true;
+                refreshUnityData();
+            }
+        }
+
+        h5gg.require(7.9); //设定最低需求的H5GG版本号//min version support for H5GG
+
+        //将h5frida-15.1.24.dylib放到.app目录中 //put h5frida-15.1.24.dylib into .app folder of ipa
+        let h5frida = h5gg.loadPlugin("h5frida", "/Library/MobileSubstrate/DynamicLibraries/h5frida.dylib");
+        if (!h5frida && !(h5frida = h5gg.loadPlugin("h5frida", "h5frida-15.1.24.dylib"))) throw "加载h5frida插件失败\n\nFailed to load h5frida plugin";
+
+        alert("frida plugin version=" + h5frida.pluginVersion() + "\nfrida core version=" + h5frida.coreVersion());
+
+        let gadget = h5frida.loadGadget("frida-gadget-15.1.24.dylib");
+        // //优先调用集成的frida核心, 将frida-gadget的dylib和config两个文件放到.app目录中
+        // if(!gadget) throw "加载frida-gadget守护模块失败\n\nFailed to load frida-gadget daemon module";
+
+        let procs = h5frida.enumerate_processes();
+        if (!procs || !procs.length) throw "frida无法获取进程列表\n\nfrida can't get process list";
+
+        let pid = -1; //pid=-1, 使用自身进程来调用OC/C/C++函数, 也可以附加到其他APP进程来调用
+        //Use its own process to call OC/C/C++ functions, or attach to other APP processes to call
+
+        // try { pid = h5gg.getProcList("ChickenDinner")[0].pid; } catch (e) { }
+        try { pid = h5gg.getProcList("standoff2")[0].pid; } catch (e) { }
+
+        let found = false;
+        for (let i = 0; i < procs.length; i++) {
+            if (procs[i].pid == pid) {
+                //if(procs[i].name!='Gadget') throw "免越狱测试请卸载frida-server的deb然后重启当前APP\nFor non-jailbreak tests, please uninstall the frida-server deb and restart the current APP";
+                found = true;
+            }
+        }
+
+        if (!found) throw "frida无法找到目标进程\n\nfrida cannot find the target process";
+
+        //检查目标APP进程是否在前台运行, 如果在后台暂停了, frida附加调用会卡住
+        //Check whether the target APP process is running in the foreground, if it is suspended in the background, frida will be blocked
+        while (pid > 0) {
+            let frontapp = h5frida.get_frontmost_application();
+            if (frontapp && frontapp.pid == pid) break;
+
+            alert("请将目标APP切换至前台运行, 再点击确定继续...\n"
+                + "Please switch the target APP to the foreground to run, and then click OK to continue...");
+        }
+
+        let session = h5frida.attach(pid);
+        if (!session) throw "frida附加进程失败\n\nfrida attach process failed";
+
+        //监听frida目标进程连接状态, 比如异常退出
+        session.on("detached", function (reason) {
+            alert("frida目标进程会话已终止(frida target process session terminated):\n" + reason);
+        });
+
+        let frida_script_line = frida_script("getline"); //safari console will auto add 2 line
+        let frida_script_code = "\n".repeat(frida_script_line - 1) + "(" + frida_script.toString() + ")()";
+        let script = session.create_script(frida_script_code); //注入frida的js脚本代码
+
+        if (!script) throw "frida注入脚本失败\n\nfrida inject script failed!";
+
+        // if(script.is_running()) {
+        //     //alert("该frida脚本已在运行, 点击确定先停止该脚本并重新加载...\nThe frida script is already running, click OK to stop the script and reload...");
+        //     script.unload(); script = session.create_script(frida_script_code);
+        // }
+
+        /*启动脚本前先设置frida脚本消息接收函数, 不要在frida脚本里发太多高频消息过来让h5gg弹出alert, 消息太多让alert阻塞在后台内存会爆导致闪退崩溃
+            Set the frida script message receiving function before starting the script,
+            Don't send too many high-frequency messages in the frida script to let h5gg show alerts,
+            because too many messages to alert will block h5frida in the background, and cause out-of-memory and crashes.
+            */
+
+        script.on('message', function (msg) {
+            if (msg.type == 'error') {
+                script.unload(); //如果脚本发生错误就停止frida脚本
+                alert("frida(脚本错误)script error:\n" + JSON.stringify(msg, null, 1).replaceAll("\\n", "\n"));
+            }
+            // if(msg.type=='send')
+            //     alert("frida(脚本消息)srcipt msg:\n"+JSON.stringify(msg.payload,null,1));
+            // if(msg.type=='log')
+            //     alert("frida(脚本日志)script log:\n"+msg.payload);
+
+            if (msg.type == 'send') {
+                recv_frida_data(msg.payload);
+            };
+        });
+
+        if (!script.load()) throw "frida启动脚本失败\n\nfrida load script failed"; //启动脚本
+
+        /**********************************************************************************/
+
+        //script.unload(); //卸载脚本
+
+        //session.detach(); //断开目标进程
+
+        /***************************************************************/
+
+        /*
+            下面是frida的js脚本代码, 运行在目标进程, 不能在h5gg中直接调用这个js函数
+            frida的js脚本代码中不能使用任何h5gg的函数和变量, 也不能使用window对象
+            h5gg和frida只能通过console.log和send/recv/post还有rpc.exports进行通信
+        
+            The following is the js script code of frida, which runs in the target process, and this js function cannot be called directly in h5gg
+            You cannot use any h5gg functions and variables in frida's js script code, nor can you use the window object
+            h5gg and frida can only communicate through console.log and send/recv/post and rpc.exports
+            */
+        function frida_script() {
+            if (arguments.length) return new Error().line; //do not modify this line!!!
+
+            console.log("frida js running...");
+
+            global.erroreport = function (info) {
+                send({ type: "error", data: info });
+            };
+
+            function load_il2cpp_api(returenType, apiName, argTypes, wrapper) {
+                let f = Module.findExportByName(null, apiName);
+                if (!f) throw "cannot find il2cpp api:" + apiName;
+                global[apiName] = wrapper.bind(new NativeFunction(f, returenType, argTypes));
+            }
+
+            function load_il2cpp_icall(returenType, method, argTypes, wrapper) {
+                let f = il2cpp_resolve_icall(method);
+                if (!f) throw "cannot find il2cpp icall:" + method;
+                global[wrapper.name] = wrapper.bind(new NativeFunction(f, returenType, argTypes));
+            }
+
+            function load_corlib_method(returenType, namespaze, clazz, name, argTypes, is_static, wrapper) {
+                let corlib = il2cpp_get_corlib();
+                //console.log("corlib", corlib, corlib.readPointer().readCString());
+                let assemblyClass = il2cpp_class_from_name(corlib, namespaze, clazz);
+                let il2cppmethod = il2cpp_class_get_method_from_name(assemblyClass, name, is_static ? argTypes.length : (argTypes.length - 1));
+                if (il2cppmethod.isNull()) throw "cannot find corlib method:" + namespaze + "." + clazz + "." + name;
+                let methodPointer = il2cppmethod.readPointer();
+                global[wrapper.name] = wrapper.bind(new NativeFunction(methodPointer, returenType, argTypes));
+            }
+
+            function load_csharp_method(returenType, module, namespaze, clazz, name, argTypes, wrapper) {
+                let assembly = assemblyLoad(module); //MonoAssembly
+                //console.log("assembly", assembly.readPointer().add(0x10).readPointer().readCString(), hexdump(assembly));
+
+                let type = assemblyGetType(assembly, namespaze + "." + clazz); //RuntimeType (Il2CppReflectionType)
+                //console.log("type", type.readPointer().add(0x10).readPointer().readCString(), hexdump(type));
+
+                // let il2cpptype = type.add(0x10).readPointer();
+
+                let method = typeGetMethod(type, name); //MonoMethod (Il2CppReflectionMethod)
+                //console.log("method", method.readPointer().add(0x10).readPointer().readCString(), hexdump(method));
+
+                if (method.isNull()) throw "cannot find c# method:" + namespaze + "." + clazz + "." + name;
+
+                let methodInfo = method.add(0x10).readPointer();
+                //console.log("methodInfo", methodInfo.readPointer(), methodInfo.add(0x10).readPointer().readCString(), hexdump(method));
+
+                let methodPointer = methodInfo.readPointer();
+                global[wrapper.name] = wrapper.bind(new NativeFunction(methodPointer, returenType, argTypes));
+            }
+
+
+            rpc.exports.init_via_il2cpp_api = function () {
+
+                load_il2cpp_api("pointer", "il2cpp_domain_get", [], function () {
+                    return this();
+                });
+
+                load_il2cpp_api("pointer", "il2cpp_thread_attach", ["pointer"], function (domain) {
+                    return this(domain);
+                });
+
+                load_il2cpp_api("pointer", "il2cpp_string_new", ["pointer"], function (str) {
+                    return this(Memory.allocUtf8String(str));
+                });
+
+                load_il2cpp_api("pointer", "il2cpp_get_corlib", [], function () {
+                    return this();
+                });
+
+                load_il2cpp_api("pointer", "il2cpp_class_from_name", ["pointer", "pointer", "pointer"], function (image, namespaze, name) {
+                    return this(image, Memory.allocUtf8String(namespaze), Memory.allocUtf8String(name));
+                });
+
+                load_il2cpp_api("pointer", "il2cpp_class_get_method_from_name", ["pointer", "pointer", "int"], function (klass, name, argsCount) {
+                    return this(klass, Memory.allocUtf8String(name), argsCount);
+                });
+
+                load_il2cpp_api("pointer", "il2cpp_resolve_icall", ["pointer"], function (name) {
+                    return this(Memory.allocUtf8String(name));
+                });
+
+                /********************************************************************************/
+
+                load_il2cpp_icall("pointer", "UnityEngine.Object::FindObjectsOfType(System.Type)", ["pointer"], function FindObjectsOfType(type) {
+                    return this(type);  //奇奇怪怪, 定义了之后必须延迟几毫秒再调用, 否则返回的数组中数量比预期少
+                }); console.log("invoke for delay...");
+
+                load_il2cpp_icall("pointer", "UnityEngine.Object::ToString()", ["pointer"], function ToString(object) {
+                    return this(object).add(0x14).readUtf16String();
+                });
+
+                load_il2cpp_icall("pointer", "UnityEngine.Object::GetName(UnityEngine.Object)", ["pointer"], function GetName(object) {
+                    return this(object).add(0x14).readUtf16String();
+                });
+
+                load_il2cpp_icall("int", "UnityEngine.Object::GetOffsetOfInstanceIDInCPlusPlusObject()", [], function GetOffsetOfInstanceIDInCPlusPlusObject() {
+                    return this();
+                });
+
+                load_il2cpp_icall("int", "UnityEngine.SceneManagement.SceneManager::get_sceneCount()", [], function get_sceneCount(object) {
+                    return this();
+                });
+
+                load_il2cpp_icall("pointer", "UnityEngine.GameObject::GetComponentsInternal(System.Type,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Object)",
+                    ["pointer", "pointer", "bool", "bool", "bool", "bool", "pointer"],
+                    function GetComponents(gameObject, type, useSearchTypeAsArrayReturnType, recursive, includeInactive, reverse, resultList) {
+                        return this(gameObject, type, useSearchTypeAsArrayReturnType, recursive, includeInactive, reverse, resultList);
+                    });
+
+                load_il2cpp_icall("bool", "UnityEngine.GameObject::get_activeInHierarchy()", ["pointer"], function get_activeInHierarchy(gameObject) {
+                    return this(gameObject);
+                });
+
+                load_il2cpp_icall("pointer", "UnityEngine.GameObject::get_transform()", ["pointer"], function get_transform(gameObject) {
+                    return this(gameObject);
+                });
+
+                load_il2cpp_icall("void", "UnityEngine.Transform::get_position_Injected(UnityEngine.Vector3&)", ["pointer", "pointer"], function get_position(transform) {
+                    let vector = Memory.alloc(4 * 3);
+                    this(transform, vector);
+                    return { x: vector.readFloat(), y: vector.add(4).readFloat(), z: vector.add(8).readFloat() };
+                });
+
+                load_il2cpp_icall("pointer", "UnityEngine.Component::get_gameObject()", ["pointer"], function get_gameObject(component) {
+                    return this(component);
+                });
+
+                load_il2cpp_icall("int", "UnityEngine.Camera::GetAllCamerasCount()", [], function GetAllCamerasCount() {
+                    return this();
+                });
+
+                load_il2cpp_icall("pointer", "UnityEngine.Camera::get_main()", [], function get_mainCamera() {
+                    return this();
+                });
+
+                load_il2cpp_icall("void", "UnityEngine.Camera::WorldToViewportPoint_Injected(UnityEngine.Vector3&,UnityEngine.Camera/MonoOrStereoscopicEye,UnityEngine.Vector3&)",
+                    ["pointer", "pointer", "int", "pointer"], function WorldToViewportPoint(camera, location, eye) {
+                        let ret = Memory.alloc(4 * 3);
+                        this(camera, location, eye, ret);
+                        return { x: ret.readFloat(), y: ret.add(4).readFloat(), z: ret.add(8).readFloat() };
+                    });
+
+                load_il2cpp_icall("void", "UnityEngine.Camera::WorldToScreenPoint_Injected(UnityEngine.Vector3&,UnityEngine.Camera/MonoOrStereoscopicEye,UnityEngine.Vector3&)",
+                    ["pointer", "pointer", "int", "pointer"], function WorldToScreenPoint(camera, location, eye) {
+                        let ret = Memory.alloc(4 * 3);
+                        this(camera, location, eye, ret);
+                        return { x: ret.readFloat(), y: ret.add(4).readFloat(), z: ret.add(8).readFloat() };
+                    });
+
+                /********************************************************************************/
+
+                let domain = il2cpp_domain_get();
+                il2cpp_thread_attach(domain);
+
+                load_corlib_method("pointer", "System.Reflection", "Assembly", "Load", ["pointer"], true, function assemblyLoad(assemblyString) {
+                    return this(il2cpp_string_new(assemblyString));
+                });
+
+                load_corlib_method("pointer", "System.Reflection", "Assembly", "GetType", ["pointer", "pointer"], false, function assemblyGetType(assembly, name) {
+                    return this(assembly, il2cpp_string_new(name));
+                });
+
+                load_corlib_method("pointer", "System", "Type", "GetMethod", ["pointer", "pointer"], false, function typeGetMethod(type, name) {
+                    return this(type, il2cpp_string_new(name));
+                });
+
+                /********************************************************************************/
+
+                load_csharp_method("int", "UnityEngine.CoreModule", "UnityEngine", "Camera", "GetAllCameras", ["pointer"], function GetAllCameras(arrbuf) {
+                    return this(arrbuf);
+                });
+
+                return true;
+            }
+
+            /********************************************************************************/
+
+            let screenFrame = ObjC.classes.UIApplication.sharedApplication().keyWindow().frame();
+            let screenSize = { width: screenFrame[1][0], height: screenFrame[1][1] };
+            //console.log("screenSize", screenSize.width, screenSize.height);
+
+            let WorldToScreen = function (position) {
+                if (global.mainCamera) {
+                    let vector = Memory.alloc(4 * 3);
+                    vector.writeFloat(position.x);
+                    vector.add(4).writeFloat(position.y);
+                    vector.add(8).writeFloat(position.z);
+                    let pos = WorldToViewportPoint(mainCamera, vector, 2);
+                    if (pos.z > 0) {
+                        pos.x *= screenSize.width;
+                        pos.y = screenSize.height * (1 - pos.y);
+                    }
+                    return pos;
+                }
+            }
+
+            rpc.exports.getdata = function () {
+                try { return getdata(); } catch (e) { erroreport(e) };
+            }
+            global.getdata = function () {
+
+                global.OffsetOfInstanceIDInCPlusPlusObject = GetOffsetOfInstanceIDInCPlusPlusObject();
+                //console.log("OffsetOfInstanceIDInCPlusPlusObject", OffsetOfInstanceIDInCPlusPlusObject);
+
+                let cameraCount = GetAllCamerasCount();
+                //console.log("cameraCount: ", cameraCount);
+
+                let cameras = [];
+
+                let allCameras = Memory.alloc(0x20 + 8 * cameraCount);
+                allCameras.add(0x18).writeInt(cameraCount);
+                cameraCount = GetAllCameras(allCameras);
+                console.log("allCameras", cameraCount, allCameras, allCameras.add(0x18).readInt());
+                //console.log("allCameras", allCameras, allCameras.add(0x18).readInt());
+                for (let i = 0; i < cameraCount; i++) {
+                    let camera = allCameras.add(0x20 + i * 8).readPointer();
+                    let camdesc = ToString(camera);
+                    //console.log(i, "camera", camera, camdesc);
+
+                    cameras.push({
+                        addr: camera,
+                        desc: '[' + camera + '] ' + camdesc
+                    });
+                }
+
+                let showObjectArray = [];
+
+                let UnityEngineAssembly = assemblyLoad("UnityEngine");
+                let GameObjectType = assemblyGetType(UnityEngineAssembly, "UnityEngine.GameObject");
+                let ComponentType = assemblyGetType(UnityEngineAssembly, "UnityEngine.Component");
+
+                //console.log("UnityEngineAssembly, GameObjectType : ", UnityEngineAssembly, GameObjectType);
+
+                let gameObjectArray = FindObjectsOfType(GameObjectType);
+                let gameObjectCount = gameObjectArray.add(0x18).readLong();
+                //console.log("gameObjectArray, gameObjectCount : ", gameObjectArray, gameObjectCount);
+
+                let gameObjects = [];
+                let componentTypes = [];
+                let componentInfos = [];
+
+                for (let i = 0; i < gameObjectCount; i++) {
+                    let object = gameObjectArray.add(0x20 + i * 8).readPointer();
+
+                    let activeInHierarchy = get_activeInHierarchy(object);
+
+                    let componentArray = GetComponents(object, ComponentType, 0, 0, 0, 0, ptr(0));
+                    let componentCount = componentArray.add(0x18).readLong();
+
+                    let transform = get_transform(object);
+                    let position = get_position(transform);
+
+                    let zeroPosition = position.x == 0 && position.y == 0 && position.z == 0;
+
+                    if (activeInHierarchy && !zeroPosition && componentCount > 1) {
+                        //let objdesc = ToString(object);
+                        let objname = GetName(object);
+                        let InstanceID = object.add(0x10).readPointer().add(OffsetOfInstanceIDInCPlusPlusObject).readInt();
+
+                        let componentArray = GetComponents(object, ComponentType, 0, 0, 0, 0, ptr(0));
+                        let componentCount = componentArray.add(0x18).readLong();
+
+                        let transform = get_transform(object);
+                        let position = get_position(transform);
+
+                        let go_components = [];
+                        for (let n = 0; n < componentCount; n++) {
+                            let comp = componentArray.add(0x20 + n * 8).readPointer();
+                            if (comp.isNull()) continue;
+
+                            //let compdesc = ToString(comp);
+                            // let compname = GetName(comp);
+                            // if(compname != objname) throw "exception!!!";
+
+                            let _pclass = comp.readPointer();
+                            let _image = _pclass.readPointer().readPointer().readCString();
+                            let _klass = _pclass.add(0x10).readPointer().readCString();
+                            let _namespaze = _pclass.add(0x18).readPointer().readCString();
+
+                            let typeKey = _image + ":" + _namespaze + "." + _klass;
+
+                            let index = componentTypes.indexOf(typeKey);
+                            if (index == -1) {
+                                index = componentTypes.push(typeKey) - 1;
+                                componentInfos.push({
+                                    count: 0,
+                                    image: _image,
+                                    type: _namespaze.length ? (_namespaze + "." + _klass) : _klass
+                                });
+                            }
+
+                            componentInfos[index].count++;
+
+                            if (go_components.indexOf(index) == -1)
+                                go_components.push(index);
+                        }
+
+                        gameObjects.push([InstanceID, objname, go_components]);
+                    }
+                }
+
+                return { "gameObjectCount": gameObjectCount, "gameObjects": gameObjects, "components": componentInfos, "cameras": cameras };
+
+            };
+
+
+
+            rpc.exports.startDraw = function (filter) {
+                try { return startDraw(filter); } catch (e) { erroreport(e) };
+            }
+            global.startDraw = function (filter) {
+                if (global.drawtimer) clearInterval(global.drawtimer);
+
+                let UnityEngineAssembly = assemblyLoad("UnityEngine");
+                let ComponentType = assemblyGetType(UnityEngineAssembly, "UnityEngine.Component");
+
+                let image = filter.MainComponentFilter.image; image = image.substring(0, image.lastIndexOf("."));
+
+                let ComponentFilterAssembly = assemblyLoad(image);
+                let ComponentFilterType = assemblyGetType(ComponentFilterAssembly, filter.MainComponentFilter.type);
+
+                function drawfunc() {
+
+                    let checkedcamera = null;
+
+                    if (filter.MainCameraFilter.length) {
+                        let cameraCount = GetAllCamerasCount();
+                        //console.log("cameraCount: ", cameraCount);
+
+                        let allCameras = Memory.alloc(0x20 + 8 * cameraCount);
+                        allCameras.add(0x18).writeInt(cameraCount);
+                        cameraCount = GetAllCameras(allCameras);
+                        //console.log("allCameras", allCameras, allCameras.add(0x18).readInt());
+                        for (let i = 0; i < cameraCount; i++) {
+                            let camera = allCameras.add(0x20 + i * 8).readPointer();
+                            //console.log(i, "camera", camera, ToString(camera));
+
+                            if (camera == filter.MainCameraFilter) {
+                                checkedcamera = camera;
+                                break;
+                            }
+                        }
+                    } else {
+                        checkedcamera = get_mainCamera();
+                    }
+
+                    if (!checkedcamera || checkedcamera.isNull()) throw "invalid camera!";
+
+                    global.mainCamera = checkedcamera;
+
+                    let showObjectArray = [];
+
+                    let ComponentFilterArray = FindObjectsOfType(ComponentFilterType);
+                    let ComponentFilterCount = ComponentFilterArray.add(0x18).readLong();
+                    //console.log("ComponentFilterArray, ComponentFilterCount : ", ComponentFilterArray, ComponentFilterCount);
+                    for (let i = 0; i < ComponentFilterCount; i++) {
+                        let ComponentFilter = ComponentFilterArray.add(0x20 + i * 8).readPointer();
+                        let object = get_gameObject(ComponentFilter);
+
+                        let activeInHierarchy = get_activeInHierarchy(object);
+
+                        if (activeInHierarchy) {
+                            //let objdesc = ToString(object);
+
+                            if (filter.GameObjectNameFilter.value.length) {
+                                let objname = GetName(object);
+
+                                if (filter.GameObjectNameFilter.type == 1 && objname != filter.GameObjectNameFilter.value)
+                                    continue;
+
+                                if (filter.GameObjectNameFilter.type == 2 && objname.indexOf(filter.GameObjectNameFilter.value) == -1)
+                                    continue;
+                            }
+
+                            if (filter.SubComponentFilters.length) {
+                                let checkedSubComponents = [];
+
+                                let componentArray = GetComponents(object, ComponentType, 0, 0, 0, 0, ptr(0));
+                                let componentCount = componentArray.add(0x18).readLong();
+
+                                for (let n = 0; n < componentCount; n++) {
+                                    let comp = componentArray.add(0x20 + n * 8).readPointer();
+                                    if (comp.isNull()) continue;
+
+                                    let _pclass = comp.readPointer();
+                                    let _klass = _pclass.add(0x10).readPointer().readCString();
+                                    let _namespaze = _pclass.add(0x18).readPointer().readCString();
+                                    let _type = _namespaze.length ? (_namespaze + "." + _klass) : _klass;
+
+                                    if (filter.SubComponentFilters.indexOf(_type) != -1 && checkedSubComponents.indexOf(_type) == -1) {
+                                        checkedSubComponents.push(_type);
+                                    }
+                                }
+
+                                if (checkedSubComponents.length != filter.SubComponentFilters.length)
+                                    continue;
+                            }
+
+                            let transform = get_transform(object);
+                            let position = get_position(transform);
+
+                            let InstanceID = object.add(0x10).readPointer().add(OffsetOfInstanceIDInCPlusPlusObject).readInt();
+
+                            showObjectArray.push({
+                                "id": InstanceID,
+                                "position": position
+                            });
+                        }
+                    }
+
+                    if (showObjectArray.length > 50) {
+                        throw "too many gameobjects to draw, count=" + showObjectArray.length + ", Please adjust the Filter so that the count of gameobjects drawn is less than 50";
+                    }
+
+                    var trans = function () {
+                        let drawobjects = [];
+                        for (let i = 0; i < showObjectArray.length; i++) {
+                            let position = showObjectArray[i].position;
+                            //position.x-=10; position.z+=5; //test
+
+                            let pos = WorldToScreen(position);
+                            //console.log("{",pos.x,pos.y,pos.z,"}");
+                            if (pos.z > 0) {
+                                drawobjects.push({
+                                    id: showObjectArray[i].id,
+                                    x: pos.x,
+                                    y: pos.y
+                                });
+                            }
+                        }
+
+                        send({ type: "draw", data: drawobjects }); //send to recv_frida_data
+                    }
+
+                    if (!filter.calcInMainThread && filter.w2sInMainThread) ObjC.schedule(ObjC.mainQueue, trans); else trans();
+
+                }
+
+                global.drawtimer = setInterval(function () {
+                    try {
+                        if (filter.calcInMainThread) ObjC.schedule(ObjC.mainQueue, drawfunc); else drawfunc();
+                    } catch (e) { clearInterval(global.drawtimer); erroreport(e) };
+
+                }, 25);
+
+                return true;
+            };
+
+            rpc.exports.stopDraw = function () {
+                if (global.drawtimer) clearInterval(global.drawtimer);
+                send({ type: "draw", data: [] });
+            }
+
+
+        }
+
+        // 临时修复iPad 设备 h5gg 环境下 <select> 标签无法使用，将此段代码加入需要使用 select 标签的 html -> script 内
+        function check_ipad() {
+            var ua = navigator.userAgent.toLowerCase();
+            var s = ua.match(/iPad/i);
+            if (s == "ipad") {
+                if (typeof h5gg != 'undefined') return true;
+                return false;
+            } else {
+                return false;
+            }
+        }
+
+        function tmpFixiPadSelect() {
+            if (!check_ipad() && typeof h5gg != 'undefined') return;
+            $("select").click(function (event) {
+                var options = event.target.children;
+                var msg = `当前设备暂时无法使用 select 标签，请手动输入序号选择！fix by:Passenger King\n`;
+                for (let i = 0; i < options.length; i++) {
+                    msg += `${i}. ${options[i].label}\n`
+                }
+                var selected = prompt(msg, "0");
+                event.target.value = options[parseInt(selected, 10)].value;
+            });
+        }
+
+        tmpFixiPadSelect();
+
+    </script>
+
+</body>
+
+</html>

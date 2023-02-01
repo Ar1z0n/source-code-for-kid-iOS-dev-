@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html>
+
+<header>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/vant@2.12/lib/index.css"/>
+    <script src="https://unpkg.com/vue@2.6/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/vant@2.12/lib/vant.min.js"></script>	
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <style>*
+      { padding: 0; margin: 0; } 
+      /*菜单*/ 
+      *:not(input, checkbox, textarea)
+      { /*禁止文本选择*/ -webkit-touch-callout:   none;
+      -webkit-user-select: none;
+      user-select: none; /* Non-prefixed version, currently */ } 
+     .content { 
+      width: 50%; /* Ширина слоя */ 
+      text-align: center; }
+      
+      .aymenu { position: fixed;
+       width: 380px;
+       height: 300px; 
+       top:  calc(50% - 180px); 
+        left: calc(50% - 180px); 
+        z-index: 999;
+        background-color: white; 
+        border-radius: 1px;
+        overflow: hidden; 
+        -webkit-user-select: none;
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+        user-select: none; }
+      
+        .fun-block__title {
+        margin: 0;
+        padding: 32px 16px 16px; 
+        color: #9d00ff;
+        font-weight: normal; 
+        font-size: 14px; 
+        line-height: 16px; }
+      
+         .van-cell { line-height: unset; } 
+         .menuBody { overflow-y: auto;
+        padding-bottom: 40px;}
+       
+          .name { 
+          position: absolute; 
+          top: 13.3%; 
+          left: 10%; 
+          font-size: 12pt; 
+          font-family: "Arial Rounded MT Bold";
+          color: #dd7fff; }
+      
+         #popup_progress {
+          display:none;
+          text-align: center;
+          background-color: #dd7fff; 
+          width:200px;
+          height:20px;
+          position:absolute;
+          left:-100px; top:100px;
+          border:1px solid #B8B8B880;
+          border-radius: 5px;
+          padding: 10px;
+          z-index: 2000; } </style>
+
+<script>
+$(document).ready(function(){
+	
+	var canvas = document.querySelector("#cav"); 
+	
+	var ctx = canvas.getContext("2d", { alpha: false, desynchronized: false, });
+
+	window.gRoles = [];
+	
+    function startdraw()
+    {				
+		ctx.clearRect(0,0,canvas.width,canvas.height);	
+		
+		ctx.textBaseline="top";
+		ctx.textAlign="center";
+		ctx.fillStyle="#dd7fff";
+		ctx.font='30px "Arial, sans-serif"';
+		ctx.fillText(("For kid ios dev "), (canvas.width)/2,50);
+			
+        for(let i=0; i<gRoles.length; i++)
+        {
+            let x = gRoles[i].x*window.devicePixelRatio;
+            let y = gRoles[i].y*window.devicePixelRatio;
+			let z = gRoles[i].z*window.devicePixelRatio;
+          		  
+			if(app.VisualCheckbox.ESPBox) {			
+				ctx.beginPath();
+				ctx.lineWidth=3; 
+				ctx.strokeStyle="#dd7fff"; 
+				ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+				if (app.VisualCheckbox.ESPBoxType == 1){
+					ctx.strokeRect(x - 1400 / z, y - 5000 / z, 2800/z, 5000/z); 
+				}   ctx.strokeStyle="#dd7fff"; 
+				if (app.VisualCheckbox.ESPBoxType == 2){
+					ctx.fillRect(x - 1400 / z, y - 5000 / z, 2800/z, 5000/z); 
+				}
+				if (app.VisualCheckbox.ESPBoxType == 3){
+					ctx.strokeRect(x - 1400 / z, y - 5000 / z, 2800/z, 5000/z); 
+					ctx.fillRect(x - 1400 / z, y - 5000 / z, 2800/z, 5000/z); 
+				}
+            }
+            if(app.VisualCheckbox.ESPLine) {
+                ctx.beginPath();
+                ctx.lineWidth=3; 
+                ctx.strokeStyle="#dd7fff";
+				if (app.VisualCheckbox.ESPLineType == 1) {
+					ctx.moveTo((canvas.width)/2, 0); 
+				} 
+				if (app.VisualCheckbox.ESPLineType == 2) {
+					ctx.moveTo((canvas.width)/2, (canvas.height)/2); 
+				} 
+				if (app.VisualCheckbox.ESPLineType == 3) {
+					ctx.moveTo((canvas.width)/2, (canvas.height)/1); 
+				}               
+                ctx.lineTo(x, y); 
+                ctx.stroke(); 
+            }			
+			if(app.VisualCheckbox.ESPDistance) {	
+				ctx.fillText("Distance - "+Math.floor(z)+"M", x, y);
+            }
+        }
+			
+		if (app.VisualCheckbox.Circle){
+			ctx.beginPath();
+			ctx.lineWidth = 3; 
+			ctx.strokeStyle = 'white'; 
+			ctx.arc((canvas.width)/2, (canvas.height)/2, app.VisualSlider.CircleRadiusSlider, 0, Math.PI * 2, false);
+			ctx.stroke(); 
+		}	
+    }
+	
+    setInterval(function(){startdraw();}, 30);
+
+});                
+</script> 
+
+</header>
+
+<body>
+
+<script>
+function DrawESP(){if(app.VisualCheckbox.ESPEnable == false) { script.call("startDraw");} else {script.call("stopDraw"); return;}}
+function recv_frida_data(payload){
+if(payload.type=="draw") gRoles = payload.data;
+else if(payload.type=="error") script.call("startDraw");}
+
+h5gg.require(7.9); 
+
+
+let h5frida=h5gg.loadPlugin("h5frida", "/Library/MobileSubstrate/DynamicLibraries/h5frida.dylib");
+if(!h5frida && !(h5frida=h5gg.loadPlugin("h5frida", "h5frida-15.1.24.dylib"))) throw "加载h5frida插件失败\n\nFailed to load h5frida plugin";
+
+alert("frida plugin version="+h5frida.pluginVersion() + "\nfrida core version="+h5frida.coreVersion());
+
+let gadget = h5frida.loadGadget("frida-gadget-15.1.24.dylib");
+// //优先调用集成的frida核心, 将frida-gadget的dylib和config两个文件放到.app目录中
+// if(!gadget) throw "加载frida-gadget守护模块失败\n\nFailed to load frida-gadget daemon module";
+    
+let procs = h5frida.enumerate_processes();
+if(!procs || !procs.length) throw "frida无法获取进程列表\n\nfrida can't get process list";
+
+let pid = -1; //pid=-1, 使用自身进程来调用OC/C/C++函数, 也可以附加到其他APP进程来调用
+//Use its own process to call OC/C/C++ functions, or attach to other APP processes to call
+
+try {pid=h5gg.getProcList("Standoff2")[0].pid;}catch(e){}
+
+let found = false;
+for(let i=0;i<procs.length;i++) {
+    if(procs[i].pid==pid) {
+        //if(procs[i].name!='Gadget') throw "免越狱测试请卸载frida-server的deb然后重启当前APP\nFor non-jailbreak tests, please uninstall the frida-server deb and restart the current APP";
+        found = true;
+    }
+}
+
+/*h5gg.require(7.9);
+
+var h5frida=h5gg.loadPlugin("h5frida", "h5frida-15.1.24.dylib");
+if(!h5frida) throw "加载h5frida插件失败\n\nFailed to load h5frida plugin";
+
+let gadget = h5frida.loadGadget("frida-gadget-15.1.24.dylib");
+ 
+var procs = h5frida.enumerate_processes();
+if(!procs || !procs.length) throw "frida无法获取进程列表\n\nfrida can't get process list";
+
+var pid = -1; 
+
+var found = false; for(var i=0;i<procs.length;i++) { if(procs[i].pid==pid) { if(procs[i].name!='Gadget') throw "免越狱测试请卸载frida-server的deb然后重启当前APP\nFor non-jailbreak tests, please uninstall the frida-server deb and restart the current APP"; found = true; } }
+
+if(!found) throw "frida无法找到目标进程\n\nfrida cannot find the target process";
+*/
+let session = h5frida.attach(pid);
+if(!session) throw "frida附加进程失败\n\nfrida attach process failed";
+
+session.on("detached", function(reason) {alert("frida目标进程会话已终止(frida target process session terminated):\n"+reason);});
+
+let frida_script_line = frida_script("getline"); 
+let frida_script_code = "\n".repeat(frida_script_line-1)+"("+frida_script.toString()+")()";
+let script = session.create_script(frida_script_code); 
+
+if(!script) throw "frida注入脚本失败\n\nfrida inject script failed!";
+
+script.on('message', function(msg) { if(msg.type=='error') { script.unload(); alert("frida(脚本错误)script error:\n"+JSON.stringify(msg,null,1).replaceAll("\\n","\n")); } if(msg.type=='send') { recv_frida_data(msg.payload); }; });
+
+if(!script.load()) throw "frida启动脚本失败\n\nfrida load script failed"; 
+
+setTimeout(function(){ script.call("init_via_il2cpp_api"); }, 1000);
+setTimeout(function(){ script.call("getdata"); }, 5000);
+
+
+
+function frida_script() { if(arguments.length) return new Error().line; 
+
+    console.log("frida js running...");
+
+    global.erroreport = function(info) {
+        send({type:"error", data:info});
+    };
+    
+    function load_il2cpp_api(returenType, apiName, argTypes, wrapper) {
+        let f = Module.findExportByName(null, apiName);
+        if(!f) throw "cannot find il2cpp api:"+apiName;
+        global[apiName] = wrapper.bind(new NativeFunction(f, returenType, argTypes));
+    }
+
+    function load_il2cpp_icall(returenType, method, argTypes, wrapper)
+    {
+        let f = il2cpp_resolve_icall(method);
+        if(!f) throw "cannot find il2cpp icall:"+method;
+        global[wrapper.name] = wrapper.bind(new NativeFunction(f, returenType, argTypes));
+    }
+
+    function load_corlib_method(returenType, namespaze, clazz, name, argTypes, is_static, wrapper)
+    {
+        let corlib = il2cpp_get_corlib();
+        let assemblyClass = il2cpp_class_from_name(corlib, namespaze, clazz);
+        let il2cppmethod = il2cpp_class_get_method_from_name(assemblyClass, name, is_static ? argTypes.length : (argTypes.length-1));
+        if(il2cppmethod.isNull()) throw "cannot find corlib method:"+namespaze+"."+clazz+"."+name;
+        let methodPointer = il2cppmethod.readPointer();
+        global[wrapper.name] = wrapper.bind(new NativeFunction(methodPointer, returenType, argTypes));
+    }
+	   
+    rpc.exports.init_via_il2cpp_api=function()
+    {
+   
+        load_il2cpp_api("pointer", "il2cpp_domain_get", [], function() {
+            return this();
+        });
+        
+        load_il2cpp_api("pointer", "il2cpp_thread_attach", ["pointer"], function(domain) {
+            return this(domain);
+        });
+
+        load_il2cpp_api("pointer", "il2cpp_string_new", ["pointer"], function(str) {
+            return this(Memory.allocUtf8String(str));
+        });
+
+        load_il2cpp_api("pointer", "il2cpp_get_corlib", [], function() {
+            return this();
+        });
+
+        load_il2cpp_api("pointer", "il2cpp_class_from_name", ["pointer","pointer","pointer"], function(image,namespaze,name) {
+            return this(image, Memory.allocUtf8String(namespaze), Memory.allocUtf8String(name));
+        });
+
+        load_il2cpp_api("pointer", "il2cpp_class_get_method_from_name", ["pointer","pointer","int"], function(klass,name,argsCount) {
+            return this(klass, Memory.allocUtf8String(name), argsCount);
+        });
+
+        load_il2cpp_api("pointer", "il2cpp_resolve_icall", ["pointer"], function(name) {
+            return this(Memory.allocUtf8String(name));
+        });
+
+        /********************************************************************************/
+
+        load_il2cpp_icall("pointer", "UnityEngine.Object::FindObjectsOfType(System.Type)", ["pointer"], function FindObjectsOfType(type) {
+            return this(type);
+        }); console.log("invoke for delay...");
+
+        load_il2cpp_icall("pointer", "UnityEngine.Object::ToString()", ["pointer"], function ToString(object) {
+            return this(object).add(0x14).readUtf16String();
+        });
+
+        load_il2cpp_icall("pointer", "UnityEngine.Object::GetName(UnityEngine.Object)", ["pointer"], function GetName(object) {
+            return this(object).add(0x14).readUtf16String();
+        });
+
+        load_il2cpp_icall("int", "UnityEngine.Object::GetOffsetOfInstanceIDInCPlusPlusObject()", [], function GetOffsetOfInstanceIDInCPlusPlusObject() {
+            return this();
+        });
+
+        load_il2cpp_icall("int", "UnityEngine.SceneManagement.SceneManager::get_sceneCount()", [], function get_sceneCount(object) {
+            return this();
+        });
+
+        load_il2cpp_icall("pointer", "UnityEngine.GameObject::GetComponentsInternal(System.Type,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Object)",
+        ["pointer","pointer","bool","bool","bool","bool","pointer"], 
+        function GetComponents(gameObject, type, useSearchTypeAsArrayReturnType, recursive, includeInactive, reverse, resultList) {
+            return this(gameObject, type, useSearchTypeAsArrayReturnType, recursive, includeInactive, reverse, resultList);
+        });
+        
+        load_il2cpp_icall("bool", "UnityEngine.GameObject::get_activeInHierarchy()", ["pointer"], function get_activeInHierarchy(gameObject) {
+            return this(gameObject);
+        });
+        
+        load_il2cpp_icall("pointer", "UnityEngine.GameObject::get_transform()", ["pointer"], function get_transform(gameObject) {
+            return this(gameObject);
+        });
+
+        load_il2cpp_icall("void", "UnityEngine.Transform::get_position_Injected(UnityEngine.Vector3&)", ["pointer","pointer"], function get_position(transform) {
+            let vector = Memory.alloc(4*3);
+            this(transform, vector);
+            return {x:vector.readFloat(), y:vector.add(4).readFloat(), z:vector.add(8).readFloat()};
+        });
+
+        load_il2cpp_icall("pointer", "UnityEngine.Component::get_gameObject()", ["pointer"], function get_gameObject(component) {
+            return this(component);
+        });
+        
+        load_il2cpp_icall("int", "UnityEngine.Camera::GetAllCamerasCount()", [], function GetAllCamerasCount() {
+            return this();
+        });
+
+        load_il2cpp_icall("pointer", "UnityEngine.Camera::get_main()", [], function get_mainCamera() {
+            return this();
+        });
+
+        load_il2cpp_icall("void", "UnityEngine.Camera::WorldToViewportPoint_Injected(UnityEngine.Vector3&,UnityEngine.Camera/MonoOrStereoscopicEye,UnityEngine.Vector3&)",
+        ["pointer","pointer","int","pointer"], function WorldToViewportPoint(camera,location,eye) {
+            let ret = Memory.alloc(4*3);
+            this(camera,location,eye,ret);
+            return {x:ret.readFloat(), y:ret.add(4).readFloat(), z:ret.add(8).readFloat()};
+        });
+
+        load_il2cpp_icall("void", "UnityEngine.Camera::WorldToScreenPoint_Injected(UnityEngine.Vector3&,UnityEngine.Camera/MonoOrStereoscopicEye,UnityEngine.Vector3&)",
+        ["pointer","pointer","int","pointer"], function WorldToScreenPoint(camera,location,eye) {
+            let ret = Memory.alloc(4*3);
+            this(camera,location,eye,ret);
+            return {x:ret.readFloat(), y:ret.add(4).readFloat(), z:ret.add(8).readFloat()};
+        });
+	      
+        /********************************************************************************/		
+        let domain = il2cpp_domain_get(); 
+        il2cpp_thread_attach(domain);
+				
+        load_corlib_method("pointer", "System.Reflection", "Assembly", "Load", ["pointer"], true, function assemblyLoad(assemblyString) {
+            return this(il2cpp_string_new(assemblyString));
+        });
+
+        load_corlib_method("pointer", "System.Reflection", "Assembly", "GetType", ["pointer","pointer"], false, function assemblyGetType(assembly, name) {
+            return this(assembly, il2cpp_string_new(name));
+        });
+
+        load_corlib_method("pointer", "System", "Type", "GetMethod", ["pointer","pointer"], false, function typeGetMethod(type, name) {
+            return this(type, il2cpp_string_new(name));
+        });
+				
+		 /********************************************************************************/
+        		
+        return true;
+		
+    }
+
+
+     
+    let screenFrame = ObjC.classes.UIApplication.sharedApplication().keyWindow().frame();
+    let screenSize = {width: screenFrame[1][0], height:screenFrame[1][1]};
+    
+    let WorldToScreen = function(position) {
+        if(get_mainCamera()) 
+        {
+            let vector = Memory.alloc(4*3);
+            vector.writeFloat(position.x);
+            vector.add(4).writeFloat(position.y);
+            vector.add(8).writeFloat(position.z);
+            let pos = WorldToViewportPoint(get_mainCamera(), vector, 2);
+            if(pos.z > 0) {
+                pos.x *= screenSize.width;
+                pos.y = screenSize.height*(1-pos.y);
+            }
+            return pos;
+        }
+    }
+	
+
+	rpc.exports.getdata=function() {try {return getdata();} catch(e) {erroreport(e)};}
+	
+	global.getdata=function() {
+
+		global.OffsetOfInstanceIDInCPlusPlusObject = GetOffsetOfInstanceIDInCPlusPlusObject(); 
+
+		let showObjectArray = [];
+    
+		let UnityEngineAssembly = assemblyLoad("UnityEngine");
+		let GameObjectType = assemblyGetType(UnityEngineAssembly, "UnityEngine.GameObject");
+		let ComponentType = assemblyGetType(UnityEngineAssembly, "UnityEngine.Component");
+    
+		let gameObjectArray = FindObjectsOfType(GameObjectType);
+		let gameObjectCount = gameObjectArray.add(0x18).readLong();
+
+		let gameObjects = [];
+		let componentTypes = [];
+		let componentInfos = [];
+    
+		for(let i=0; i<gameObjectCount; i++)
+		{
+			let object = gameObjectArray.add(0x20+i*8).readPointer();
+    
+			let activeInHierarchy = get_activeInHierarchy(object);
+        
+			let componentArray = GetComponents(object, ComponentType, 0,0,0,0, ptr(0));
+			let componentCount = componentArray.add(0x18).readLong();
+
+			let transform = get_transform(object);
+			let position = get_position(transform);
+
+			let zeroPosition = position.x==0 && position.y==0 && position.z==0;
+
+			if(activeInHierarchy && !zeroPosition && componentCount>1)
+			{
+				let objname = GetName(object);
+				let InstanceID = object.add(0x10).readPointer().add(OffsetOfInstanceIDInCPlusPlusObject).readInt();
+    
+				let componentArray = GetComponents(object, ComponentType, 0,0,0,0, ptr(0));
+				let componentCount = componentArray.add(0x18).readLong();
+    
+				let transform = get_transform(object);
+				let position = get_position(transform);
+
+				let go_components=[];
+				for(let n=0; n<componentCount; n++)
+				{
+					let comp = componentArray.add(0x20+n*8).readPointer();
+					if(comp.isNull()) continue;
+
+					let _pclass = comp.readPointer();
+					let _image = _pclass.readPointer().readPointer().readCString();
+					let _klass = _pclass.add(0x10).readPointer().readCString();
+					let _namespaze = _pclass.add(0x18).readPointer().readCString();
+
+					let typeKey = _image+":"+_namespaze+"."+_klass;
+
+					let index = componentTypes.indexOf(typeKey);
+					if(index==-1) {
+						index = componentTypes.push(typeKey)-1;
+						componentInfos.push({
+							count:0, 
+							image:_image, 
+							type:_namespaze.length ? (_namespaze+"."+_klass) : _klass
+						});
+					}	
+                
+					componentInfos[index].count++;
+
+					if(go_components.indexOf(index)==-1)
+						go_components.push(index);
+				}
+    
+				gameObjects.push([InstanceID,objname,go_components]);
+			}
+		}
+    
+		return {"gameObjectCount":gameObjectCount, "gameObjects":gameObjects, "components":componentInfos};
+    
+	};
+
+  
+  rpc.exports.startDraw=function() { try {return startDraw();} catch(e) {erroreport(e)}; }
+  
+  global.startDraw=function() 
+  {
+    if(global.drawtimer) clearInterval(global.drawtimer);
+
+    let UnityEngineAssembly = assemblyLoad("UnityEngine");
+    let ComponentType = assemblyGetType(UnityEngineAssembly, "UnityEngine.Component");
+    let ComponentFilterAssembly = assemblyLoad("Assembly-CSharp"); 
+    let ComponentAllEnemies = assemblyGetType(ComponentFilterAssembly, "Axlebolt.Standoff.Player.Aim.AimController");
+
+	function drawfunc() {
+	
+		if (!get_mainCamera() || get_mainCamera().isNull()) return; 
+
+		let showObjectArray = [];
+
+		let ComponentFilterArray = FindObjectsOfType(ComponentAllEnemies);
+		let ComponentFilterCount = ComponentFilterArray.add(0x18).readLong();
+		for(let i=0; i<ComponentFilterCount; i++)
+		{
+			let ComponentFilter = ComponentFilterArray.add(0x20+i*8).readPointer();
+			let object = get_gameObject(ComponentFilter); //здесь хуйня получение обьекта, а теперь пошел нахуй
+		
+			let activeInHierarchy = get_activeInHierarchy(object);
+        
+			if(activeInHierarchy) 
+			{                     
+				let transform = get_transform(object);
+				let position = get_position(transform);
+
+				let InstanceID = object.add(0x10).readPointer().add(OffsetOfInstanceIDInCPlusPlusObject).readInt();
+            
+				showObjectArray.push({ "id":InstanceID, "position":position });
+			}
+    }
+
+    var trans = function() {
+        let drawobjects=[];
+        for(let i=0; i<showObjectArray.length; i++)
+        {
+            let position = showObjectArray[i].position;
+            let pos = WorldToScreen(position);
+
+            if(pos.z>1) {
+                drawobjects.push({
+                    id:showObjectArray[i].id,
+                    x:pos.x,
+                    y:pos.y,
+					z:pos.z
+                });
+            }
+        }        
+        send({type:"draw", data:drawobjects}); 
+    }	
+	ObjC.schedule(ObjC.mainQueue, trans);		
+  }
+
+  global.drawtimer = setInterval(function(){
+    try {
+        drawfunc();
+    } catch(e) {clearInterval(global.drawtimer);erroreport(e)};   
+  }, 25);
+
+    return true;
+ };
+
+ rpc.exports.stopDraw=function() {
+    if(global.drawtimer) clearInterval(global.drawtimer);
+    send({type:"draw", data:[]});
+ }
+
+
+}
+</script>
+
+<canvas id="cav" width="100%" height="100%" style="width:100%;height:100%;"></canvas>
+ 
+<div id="app">
+	<div style="border:3px solid #dd7fff; border-radius:10px;" class="aymenu" ref="menuMain">
+		<div @touchstart="titleTouchStart" @touchmove="titleTouchMove">
+			<van-nav-bar>
+				<template #title>
+					<van-button type="primary" color="#dd7fff" @click="changeTab('Global')" size="mini"  plain>Global</van-button>
+					<van-button type="primary" color="#dd7fff" @click="changeTab('Visual')" size="mini" plain>Visual</van-button>
+					<van-button type="primary" color="#dd7fff" @click="changeTab('About')" size="mini" plain>About</van-button>
+					<div id="popup_loadscripts" class="popup_view3">
+				</template>
+				<template #right>
+					<van-icon @click="closeMenu" name="close" size="20" /> 
+				</template>
+			</van-nav-bar>
+			</div>
+			<div  class="menuBody" ref="menuBody">
+				<div>
+					<!--------------------------------------------------------------------------------------------------------------------------------------------------->
+					<div v-show="tabValue==='Global'">
+						<h2 id="name" class="fun-block__title" style="padding-top: 20px; left: 70px;"><center>For kid ios dev </center></h2>						
+					</div>
+					<div v-show="tabValue==='Visual'">
+						<h3 id="name" class="fun-block__title" style="padding-top: 20px;"><center>For kid ios dev </center></h3>
+						<van-cell-group inset>
+							<p class="content"  style="padding-top: 10px;">
+								<center>ESP</center>
+							</p>
+							<br>
+							<van-checkbox v-model="VisualCheckbox.ESPEnable" style="margin-left: 10px;" icon-size="25px" onclick="DrawESP()">ESP Enable</van-checkbox>
+							<br>
+							<van-checkbox v-model="VisualCheckbox.ESPBox" style="margin-left: 10px;" icon-size="25px" > Box</van-checkbox>
+							<br>
+							<van-checkbox v-model="VisualCheckbox.ESPLine" style="margin-left: 10px;" icon-size="25px"> Line</van-checkbox>
+							<br>							
+							<van-checkbox v-model="VisualCheckbox.ESPDistance" style="margin-left: 10px;" icon-size="25px"> Distance</van-checkbox>
+							<br>
+							<p style="margin-left: 10px;">ESP Box Type:</p>
+							<br>
+							<van-stepper style="margin-left: 10px;" v-model="VisualCheckbox.ESPBoxType" theme="round" button-size="25" max="3" disable-input></van-stepper>
+							<br>
+							<p style="margin-left: 10px;">ESP Line Type:</p>
+							<br>
+							<van-stepper style="margin-left: 10px;" v-model="VisualCheckbox.ESPLineType" theme="round" button-size="25" max="3" disable-input></van-stepper>
+							<br>
+						</van-cell-group>
+						<br>
+						<van-cell-group inset>
+							<p class="content"  style="padding-top: 10px;">
+								<center>Misc</center>								
+							</p>
+							<br>
+							<van-checkbox v-model="VisualCheckbox.Circle" style="margin-left: 10px;" icon-size="25px">Circle</van-checkbox>
+							<br>
+							<p style="margin-left: 10px;">Circle Radius:</p>
+							<br>
+							<van-slider v-model="VisualSlider.CircleRadiusSlider" style="width: 91%; margin-left: 15px;" :min="10" :max="200"></van-slider>
+							<br>													   
+							<van-checkbox v-model="GlobalCheckbox.FovHook" style="margin-left: 10px;" icon-size="25px" onclick="FovHookVoid()" >Fov</van-checkbox>
+							<br>
+						</van-cell-group>
+					</div>
+					<div v-show="tabValue==='About'">
+						<h3 id="name" class="fun-block__title" style="padding-top: 20px;"><center>For kid ios dev</center></h3> 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script> 		
+ var app = new Vue({
+            el: '#app',
+            data() {
+                return {					
+					GlobalCheckbox: {
+						GodMode: 1,
+                        InVisible: 1,
+                        GravityOff: 1,
+                        SlowMove: false,
+                        LongJump: false,
+                        FastJump: false,
+                        LongJumpAutoJump: false,
+                        DeadTrigger: false,
+                        DontReturnSpawn: false,
+                        FriendlyFire: false,
+                        PlantAnyWhere: false,
+                        DefuseAnyWhere: false,
+                        BuyZoneAnyWhere: false,
+                        CameraOnlyNone: false,
+                        UseTouce: false,
+                        Pingq: false,
+                        FreezeWeapon: false,
+                        FreezeWeaponCanSeeOnlyOther: false,
+                        BulletTracking: false,
+                        WallShot: false,
+                        Bypass: false,
+                        AntiKick: false,                       
+                        FireRate: false,
+						FovHook: false ,
+						ShakeOff: false ,
+						BunnyHopAutoJump: false,
+					},				
+					VisualCheckbox: {
+						ESPEnable: false,
+						ESPBox: false,
+						ESPLine: false,
+						ESPDistance: false,
+						Circle: false,
+						RandomColor: false,
+						Crosshair: false,
+						ESPBoxType: 1,
+						ESPLineType: 1,
+					},
+					VisualSlider: {
+					    CircleRadiusSlider: 10,
+						CrosshairSizeSlider: 10,
+					},
+					tabValue: "Global"
+                }         
+            },
+            mounted() {
+				this.setRect(320, 240);
+				
+            },
+            methods: {									
+                setRect(w, h, x = -1, y = -1) {
+                    var boxW = w;
+                    var boxH = h;
+
+                    var ayMenu = this.$refs.menuMain;
+                    ayMenu.style.width = `${boxW}px`;
+                    ayMenu.style.height = `${boxH}px`;
+                    if (x == -1) ayMenu.style.left = `calc(50% - ${boxW / 2}px)`;
+                    if (y == -1) ayMenu.style.top = `calc(50% - ${boxH / 2}px)`;
+                    
+                    var menuBody = this.$refs.menuBody;
+                    menuBody.style.height = `${boxH - 46 - 40}px`;
+                },
+                titleTouchStart(event) {
+                    this.touchStartX = parseInt(event.touches[0].clientX);
+                    this.touchStartY = parseInt(event.touches[0].clientY);
+
+                    var ayMenu = this.$refs.menuMain;
+                    this.menuLastX = ayMenu.offsetLeft;
+                    this.menuLastY = ayMenu.offsetTop;
+                },
+                titleTouchMove(event) {
+                    event.preventDefault();
+                    var distanceX = event.touches[0].clientX - this.touchStartX;
+                    var distanceY = event.touches[0].clientY - this.touchStartY;
+
+                    var ayMenu = this.$refs.menuMain;
+                    ayMenu.style.left = this.menuLastX + distanceX + "px";
+                    ayMenu.style.top = this.menuLastY + distanceY + "px";
+                },
+                changeTab(v) {
+					this.tabValue = v;
+				},
+                closeMenu() {
+                    var menu = document.querySelector("#app");
+                    menu.style.display = "none";
+                    setWindowTouch(false);
+                },
+				
+            }
+        });
+		
+        setWindowDrag(0, 0, 0, 0);
+		
+      
+        var layout = function () {
+            if (window.lastorientation == window.orientation) return;
+            window.lastorientation = window.orientation;
+			
+			var canvas = document.querySelector("#cav");
+            var scale = window.devicePixelRatio;
+			
+            if (Math.abs(window.orientation) == 90) {
+			
+				canvas.width = window.screen.height * scale;
+                canvas.height = window.screen.width * scale;
+
+                setWindowRect(0, 0, window.screen.height, window.screen.width);
+            } else {
+			
+				canvas.height = window.screen.height * scale;
+                canvas.width = window.screen.width * scale;
+
+                setWindowRect(0, 0, window.screen.width, window.screen.height);
+            }
+        }
+
+        layout(); 
+        window.addEventListener("orientationchange", layout, false);
+
+        setButtonAction(function () {
+            var menu = document.querySelector("#app");
+            if (menu.style.display == "none") {
+                menu.style.display = "block";
+                setWindowTouch(true);
+            } else {
+                menu.style.display = "none";
+                setWindowTouch(false);
+            }
+        });
+</script>
+
+</body>
+
+</html>
