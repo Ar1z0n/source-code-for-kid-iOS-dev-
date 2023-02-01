@@ -1,0 +1,87 @@
+Fast game 
+Offset 0x1CED284
+Patch 0xE003271EC0035FD6
+	
+Fast Plant
+Offset 0x1CA057C
+Patch 0xE003271EC0035FD6
+	
+WallShot
+Offset 0x1C61410 
+Patch 0x00F0271EC0035FD6
+
+Fire Rate 
+Offset 0x1C6C2E4 
+Patch 0xC0035FD6
+	
+Stop Time 
+Offset: 0x1CED284 
+Patch: 0xC0035FD6
+	
+One Hit Kill 
+Offset 0x1C4F638, 0x1C4F990, 0x1C4F618, 0x1C4F5F8, 0x1C4F5D0, 0x1C4F5A8, 0x1C4F588 
+Patchs 0x007D80D2C0035FD6 (patch all)
+	
+Jump Hack 
+Offset 0x3404FB4
+Patch 0x200080D2C0035FD6
+	
+No Recoil
+Offset 0x1C68D54
+Patch 0xC0035FD6
+	
+Fps Hack 
+Offset 0x1CE9388 
+Patch 0x200080D2C0035FD6
+	
+Infinity Ammo 
+Offset 0x1CED4D8 
+Patch 0x20008052C0035FD6
+	
+Plant Anywhere 
+Offsets 0x1CA626C, 0x1CA6294, 0x1CA62D4 
+Patch 0x200080D2C0035FD6, 0x200080D2C0035FD6, 0x200080D2C0035FD6
+	
+No drop 
+Offset 0x1E0A2F4 
+Patch 0x200080D2C0035FD6
+	
+Money hack 
+Offset 0x1CA5CA4 
+Patch 0x00008052C0035FD6
+	
+But anywhere 
+Offsets 0x1DB7C90, 0x1DB9A1C 
+Patch's 0x20008052C0035FD6, 0x20008052C0035FD6
+	
+Friendly fire 
+Offset 0x1E2B618 
+Patch 0x200080D2C0035FD6
+	
+Don't Return To Spawn
+Offset 0x1D0D3C8 
+Patch 0x00008052C0035FD6 
+	
+Anti Flash 
+Offset 0x1C6FDB8 
+Patch 0xC0035FD6 
+	
+Anti He 
+Offset 0x1C91360
+Patch 0xC0035FD6
+	
+No Grenade 
+Offset 0x1C91030 
+Patch 0xC0035FD6
+	
+Team Radar 
+Offsets 0x1E17220, 0x1E17558
+Patch  0xC0035FD6, 0xC0035FD6 
+
+Fast Grenade 
+Offset 0x1C721B8
+Patch 0x20008052C0035FD6
+
+Always Respawn
+Offset 0x1DB1B24 
+Patch 0x20008052C0035FD6
